@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  shakemap:
+    image: seddev/shakemap:v1.0.0
+    container_name: shakemap
+    volumes:
+      - '/home/dorran/Documents/shakemap/data/test-data:/home/shakemap/shakemap_profiles/shakemap/data'
