@@ -1,13 +1,15 @@
 FROM continuumio/miniconda3
 
+# Note: miniconda3 is based on Debian
+
 # ------------------------ CONFIG PARAMETERS ---------------------------
 ARG user=shakemap
 ARG group=shakemap
 ARG shakemaptag=4.0.1
+ARG openquaketag=3.6.0
 # ----------------------------------------------------------------------
 
 # Download/Install required packages
-# apk update &&
 RUN apt-get update && apt-get install -y bash wget git gcc g++ sudo curl bzip2
 
 # Create the user/group to run ShakeMap
@@ -19,6 +21,14 @@ RUN echo "${user} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/user && \
 # Switch to our new user and move to their home directory
 WORKDIR /home/${user}
 RUN mkdir /home/${user}/data
+
+# Download OQ release for install
+RUN wget -q https://github.com/gem/oq-engine/archive/v${openquaketag}.tar.gz -O - | tar -xz \
+    && mv oq-engine-${openquaketag} /home/${user}/oq-engine_src
+WORKDIR /home/${user}/oq-engine_src
+RUN pip install -r requirements-py37-linux64.txt -r requirements-extra-py37-linux64.txt
+RUN pip install .
+WORKDIR /home/${user}
 
 # Download ShakeMap Release
 RUN wget -q https://github.com/usgs/shakemap/archive/${shakemaptag}.tar.gz -O - | tar -xz \
@@ -36,7 +46,6 @@ WORKDIR /home/${user}/shakemap_src
 COPY setup.py /home/${user}/shakemap_src
 RUN /opt/conda/bin/pip install --no-deps  .
 
-RUN echo | find /opt/conda/lib/python3.7/site-packages/shakemap/
 
 # Cleanup src dir to avoid path conflicts
 WORKDIR /home/${user}

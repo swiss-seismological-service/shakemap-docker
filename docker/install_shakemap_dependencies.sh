@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-echo "Using python version $py_ver"
 echo "Installing shakemap dependencies using conda..."
 
 # Package list:
 package_list=(
-      "python=$py_ver"
       "amptools"
       "cartopy"
       "cython"
@@ -24,7 +22,6 @@ package_list=(
       "matplotlib<=2.3"
       "numpy"
       "obspy"
-      "openquake.engine"
       "pandas"
       "ps2ff"
       "psutil"
