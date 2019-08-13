@@ -19,8 +19,4 @@ share/python-wheels/
 *.egg
 bin/*.conf
 
-docker/topo/*
-docker/vs30/*
-docker/mapping/*
-
 .idea
