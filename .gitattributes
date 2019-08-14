@@ -1,2 +1,4 @@
 docker/**/*.grd filter=lfs diff=lfs merge=lfs -text
 docker/mapping/* filter=lfs diff=lfs merge=lfs -text
+docker/**/mapping/ filter=lfs diff=lfs merge=lfs -text
+docker/tag/mapping/* filter=lfs diff=lfs merge=lfs -text

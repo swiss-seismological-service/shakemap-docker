@@ -1,7 +1,9 @@
 version: '3.7'
 services:
+  # This is just an example.
   shakemap:
     image: seddev/shakemap:v1.0.0
     container_name: shakemap
+    # A volume containing event data should be mounted to the image:
     volumes:
       - '/home/someone/data:/home/shakemap/shakemap_profiles/shakemap/data'

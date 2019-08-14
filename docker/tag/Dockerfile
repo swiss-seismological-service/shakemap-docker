@@ -31,33 +31,30 @@ RUN pip install .
 WORKDIR /home/${user}
 
 # Download ShakeMap Release
-RUN wget -q https://github.com/usgs/shakemap/archive/${shakemaptag}.tar.gz -O - | tar -xz \
-    && mv shakemap-${shakemaptag} shakemap_src
+RUN git clone https://github.com/usgs/shakemap && mv shakemap shakemap_src
 
-# Run scipt to generate shakemaps venv (modified from official install.sh)
+# Checkout the desired commit
+WORKDIR /home/${user}/shakemap_src
+RUN git checkout tags/${shakemaptag}
+WORKDIR /home/${user}
+
+# Run scipt to install shakemap's dependencies
 COPY install_shakemap_dependencies.sh /home/${user}/shakemap_src
 RUN sudo chmod a+x /home/${user}/shakemap_src/install_shakemap_dependencies.sh
 RUN /home/${user}/shakemap_src/install_shakemap_dependencies.sh
 
-# Install ShakeMap
+# Install ShakeMap (editable mode)
 WORKDIR /home/${user}/shakemap_src
+RUN /opt/conda/bin/pip install --no-deps --editable .
 
-# Copy an updated setup.py since the provided one doesn't install package data properly...
-COPY setup.py /home/${user}/shakemap_src
-RUN /opt/conda/bin/pip install --no-deps  .
-
-
-# Cleanup src dir to avoid path conflicts
+# Return to home directory and switch to default user
 WORKDIR /home/${user}
-RUN rm -r /home/${user}/shakemap_src
-
 USER ${user}
 
 # Configure matplotlib to use non-interactive backend to avoid warnings
-RUN mkdir /home/${user}/.config; exit 0
+RUN mkdir /home/${user}/.config
 RUN mkdir /home/${user}/.config/matplotlib
 RUN echo "backend : Agg" > /home/${user}/.config/matplotlib/matplotlibrc
-
 
 # Initialize profile
 # This will create data dirs at:

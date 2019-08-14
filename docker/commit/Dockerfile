@@ -22,7 +22,7 @@ RUN echo "${user} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/user && \
 WORKDIR /home/${user}
 RUN mkdir /home/${user}/data
 
-# Download OQ release for install
+# Download OQ release and install
 RUN git clone https://github.com/gem/oq-engine
 WORKDIR /home/${user}/oq-engine
 RUN git checkout ${openquakecommit}
@@ -45,24 +45,15 @@ RUN /home/${user}/shakemap_src/install_shakemap_dependencies.sh
 
 # Install ShakeMap
 WORKDIR /home/${user}/shakemap_src
-
-# Copy an updated setup.py since the provided one doesn't install package data properly...
-# TODO - Try this with the built in setup.py
-# COPY setup.py /home/${user}/shakemap_src
 RUN /opt/conda/bin/pip install --no-deps --editable .
 
-# TODO - REMOVE SINCE WE ARE IN EDITABLE MODE
-# Cleanup src dir to avoid path conflicts
-# WORKDIR /home/${user}
-# RUN rm -r /home/${user}/shakemap_src
-
+# Swap back to the default user
 USER ${user}
 
 # Configure matplotlib to use non-interactive backend to avoid warnings
 RUN mkdir /home/${user}/.config; exit 0
 RUN mkdir /home/${user}/.config/matplotlib
 RUN echo "backend : Agg" > /home/${user}/.config/matplotlib/matplotlibrc
-
 
 # Initialize profile
 # This will create data dirs at:

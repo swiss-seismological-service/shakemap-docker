@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-echo "Installing shakemap dependencies using conda..."
+# This dependency install script is based off of the official ShakeMap install
+# script and will need to be updated if the dependencies installed there
+# change.
 
 # Package list:
 package_list=(
